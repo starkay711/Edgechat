@@ -24,9 +24,12 @@ export function useChatViewport({ activeRoom }) {
 			"--chat-viewport-height",
 			`${Math.round(viewportHeight)}px`,
 		);
+		// iOS 橡皮筋拖动时 visualViewport.offsetTop 会随手指来回变化，
+		// 直接同步会让整个界面跟着手指反向跑；只在键盘弹起（视口高度明显变小）时同步偏移。
+		const keyboardOpen = viewportHeight < window.innerHeight * 0.8;
 		document.documentElement.style.setProperty(
 			"--chat-viewport-offset-top",
-			`${Math.round(visualViewport?.offsetTop || 0)}px`,
+			`${keyboardOpen ? Math.round(visualViewport?.offsetTop || 0) : 0}px`,
 		);
 	}
 
